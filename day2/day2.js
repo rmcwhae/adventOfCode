@@ -8,9 +8,16 @@ async function processFile() {
         const processedContents = contents
             .split('\n')
             .map(entry => entry.split(' '))
-            .map(round => computeRoundScore(round[0], round[1]))
+            .map(round => computeRoundScoreByShape(round[0], round[1]))
             .reduce((a, b) => a + b, 0)
-        console.log('The total score is', processedContents)
+        console.log('Part 1: The total score is', processedContents)
+
+        const processedContentsRnd2 = contents
+            .split('\n')
+            .map(entry => entry.split(' '))
+            .map(round => computeRoundScoreByOutcome(round[0], round[1]))
+            .reduce((a, b) => a + b, 0)
+        console.log('Part 2: The total score is', processedContentsRnd2)
     } catch (err) {
         console.error(err.message)
     }
@@ -18,7 +25,7 @@ async function processFile() {
 
 processFile()
 
-function computeRoundScore(opponentHand, yourHand) {
+function computeRoundScoreByShape(opponentHand, yourHand) {
     if (opponentHand === 'A') {
         if (yourHand === 'X') {
             return 1 + 3
@@ -46,9 +53,43 @@ function computeRoundScore(opponentHand, yourHand) {
     }
 }
 
+function computeRoundScoreByOutcome(opponentHand, outcome) {
+    if (outcome === 'X') { // Lose
+        if (opponentHand === 'A') {
+            return 0 + 3
+        } else if (opponentHand === 'B') {
+            return 0 + 1
+        } else if (opponentHand === 'C') {
+            return 0 + 2
+        }
+    } else if (outcome ==='Y') { // Draw
+        if (opponentHand === 'A') {
+            return 3 + 1
+        } else if (opponentHand === 'B') {
+            return 3 + 2
+        } else if (opponentHand === 'C') {
+            return 3 + 3
+        }
+    } else if (outcome === 'Z') { // Win
+        if (opponentHand === 'A') {
+            return 6 + 2
+        } else if (opponentHand === 'B') {
+            return 6 + 3
+        } else if (opponentHand === 'C') {
+            return 6 + 1
+        }
+    }
+}
+
+// Part 1
 // Rock (A/X) 1
 // Paper (B/Y) 2
 // Scissors (C/Z) 3
 // Win 6
 // Loss 0
 // Draw 3
+
+// Part 2
+// X lose 0
+// Y draw 3
+// Z win 6
