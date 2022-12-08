@@ -10,7 +10,7 @@ async function processFile() {
             .map(entry => entry.split(' '))
             .map(round => computeRoundScore(round[0], round[1]))
             .reduce((a, b) => a + b, 0)
-        console.log(processedContents)
+        console.log('The total score is', processedContents)
     } catch (err) {
         console.error(err.message)
     }
