@@ -4,26 +4,31 @@ const { resolve } = require('node:path');
 async function processFile() {
     try {
         const filePath = resolve('./input.txt')
-        const contents = await readFile(filePath, { encoding: 'utf8' })
-        const processedContents = contents
-            .split('\n')
-            .map(entry => entry.split(' '))
-            .map(round => computeRoundScoreByShape(round[0], round[1]))
-            .reduce((a, b) => a + b, 0)
-        console.log('Part 1: The total score is', processedContents)
-
-        const processedContentsRnd2 = contents
-            .split('\n')
-            .map(entry => entry.split(' '))
-            .map(round => computeRoundScoreByOutcome(round[0], round[1]))
-            .reduce((a, b) => a + b, 0)
-        console.log('Part 2: The total score is', processedContentsRnd2)
+        return await readFile(filePath, { encoding: 'utf8' })
     } catch (err) {
         console.error(err.message)
     }
 }
 
-processFile()
+processFile().then(contents => {
+    const part1Contents = contents
+        .split('\n')
+        .map(entry => entry.split(' '))
+        .map(round => computeRoundScoreByShape(round[0], round[1]))
+        .reduce((a, b) => a + b, 0)
+
+    console.log('Part 1: The total score is', part1Contents)
+
+    const processedContentsRnd2 = contents
+        .split('\n')
+        .map(entry => entry.split(' '))
+        .map(round => computeRoundScoreByOutcome(round[0], round[1]))
+        .reduce((a, b) => a + b, 0)
+        
+    console.log('Part 2: The total score is', processedContentsRnd2)
+})
+
+// Helpers
 
 function computeRoundScoreByShape(opponentHand, yourHand) {
     if (opponentHand === 'A') {
@@ -34,7 +39,7 @@ function computeRoundScoreByShape(opponentHand, yourHand) {
         } else if (yourHand === 'Z') {
             return 3 + 0
         }
-    } else if (opponentHand ==='B') {
+    } else if (opponentHand === 'B') {
         if (yourHand === 'X') {
             return 1 + 0
         } else if (yourHand === 'Y') {
@@ -62,7 +67,7 @@ function computeRoundScoreByOutcome(opponentHand, outcome) {
         } else if (opponentHand === 'C') {
             return 0 + 2
         }
-    } else if (outcome ==='Y') { // Draw
+    } else if (outcome === 'Y') { // Draw
         if (opponentHand === 'A') {
             return 3 + 1
         } else if (opponentHand === 'B') {
