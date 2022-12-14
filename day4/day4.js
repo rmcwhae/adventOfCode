@@ -1,16 +1,23 @@
 const processFile = require("../openfile")
 
 processFile('./input.txt').then(contents => {
-    const count = contents
+    const part1Count = contents
         .map(string => {
             return string.split(',')
         })
-        .map(processPair).filter(item => item === true).length
-    console.log('Part 1 count is', count)
+        .map(item => processPair(item, checkContainment)).filter(item => item === true).length
+    console.log('Part 1 count is', part1Count)
+
+    const part2Count = contents
+        .map(string => {
+            return string.split(',')
+        })
+        .map(item => processPair(item, checkOverlap)).filter(item => item === true).length
+    console.log('Part 2 count is', part2Count)
 
 })
 
-function processPair(pair) {
+function processPair(pair, processFunction) {
     const range1 = pair[0].split('-').map(item => Number(item))
     const range2 = pair[1].split('-').map(item => Number(item))
     const array1 = []
@@ -21,8 +28,17 @@ function processPair(pair) {
     for (let i = range2[0]; i <= range2[1]; i++) {
         array2.push(i)
     }
-    const containedCount = checkContainment(array1, array2)
-    return containedCount
+    return processFunction(array1, array2)
+}
+
+function checkOverlap(array1, array2) {
+    for (const array1Item of array1) {
+        if (array2.find(array2Item => array2Item === array1Item)) {
+            return true
+        }
+    }
+
+    return false
 }
 
 function checkContainment(array1, array2) {
