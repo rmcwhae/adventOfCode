@@ -1,6 +1,6 @@
 const processFile = require("../openfile")
 
-const stacks = {
+const part1Stacks = {
     "1": ["B", "Q", "C"],
     "2": ["R", "Q", "W", "Z"],
     "3": ["B", "M", "R", "L", "V"],
@@ -11,41 +11,53 @@ const stacks = {
     "8": ["C", "G", "M", "N", "B", "W", "Z", "P"],
     "9": ["N", "J", "B", "M", "W", "Q", "F", "P"],
 }
+const part2Stacks = JSON.parse(JSON.stringify(part1Stacks)) // Deep clone
 
 processFile('./input.txt').then(contents => {
-    const part1Instructions = contents
+    const instructions = contents
         .map(string => {
             return string.split(',')
         })
         .flat()
         .map(processMoveInstructions)
 
-    for (const instruction of part1Instructions) {
-        handleInstruction(instruction, stacks)
+    for (const instruction of instructions) {
+        handleInstruction(instruction, part1Stacks)
     }
-    const finalStacks = []
-    for (const [key, value] of Object.entries(stacks)) {
-        finalStacks.push(value.slice(-1)[0])
+    const part1FinalStacks = []
+    for (const [key, value] of Object.entries(part1Stacks)) {
+        part1FinalStacks.push(value.slice(-1)[0])
     }
-    console.log({ finalStacks })
-    console.log('Part 1 final stacks', finalStacks.join(''))
+    console.log('Part 1 final stacks', part1FinalStacks.join(''))
+
+    for (const instruction of instructions) {
+        handleInstructionPart2(instruction, part2Stacks)
+    }
+    const part2FinalStacks = []
+    for (const [key, value] of Object.entries(part2Stacks)) {
+        part2FinalStacks.push(value.slice(-1)[0])
+    }
+    console.log('Part 2 final stacks', part2FinalStacks.join(''))
 })
+
+function handleInstructionPart2(instruction, stacks) {
+    // Instruction = { number: a, from: b, to: c }
+    const { number, from, to } = instruction
+    const itemsToMove = stacks[from].splice(stacks[from].length - number)
+    stacks[to] = [...stacks[to], ...itemsToMove]
+
+    return stacks
+}
 
 function handleInstruction(instruction, stacks) {
     // Instruction = { number: a, from: b, to: c }
     const { number, from, to } = instruction
-    console.log('------------------------------------------')
-    console.log({ stacksBefore: stacks })
-    console.log({ number, from, to })
-
     for (let i = 0; i < number; i++) {
         const itemToMove = stacks[from].splice(-1)[0]
         if (itemToMove) {
             stacks[to] = [...stacks[to], itemToMove]
         }
     }
-    console.log({ stacksAfter: stacks })
-    
 
     return stacks
 }
