@@ -1,27 +1,17 @@
 const processFile = require("../openfile")
 
-// [Q]     [P] [P]
-// [G] [V] [S] [Z] [F]
-// [W] [V] [F] [Z] [W] [Q]
-// [V] [T] [N] [J] [W] [B] [W]
-// [Z] [L] [V] [B] [C] [R] [N] [M]
-// [C] [W] [R] [H] [H] [P] [T] [M] [B]
-// [Q] [Q] [M] [Z] [Z] [N] [G] [G] [J]
-// [B] [R] [B] [C] [D] [H] [D] [C] [N]
-// 1   2   3   4   5   6   7   8   9 
+const stacks = {
+    "1": ["B", "Q", "C"],
+    "2": ["R", "Q", "W", "Z"],
+    "3": ["B", "M", "R", "L", "V"],
+    "4": ["C", "Z", "H", "V", "T", "W"],
+    "5": ["D", "Z", "H", "B", "N", "V", "G"],
+    "6": ["H", "N", "P", "C", "J", "F", "V", "Q"],
+    "7": ["D", "G", "T", "R", "W", "Z", "S"],
+    "8": ["C", "G", "M", "N", "B", "W", "Z", "P"],
+    "9": ["N", "J", "B", "M", "W", "Q", "F", "P"],
+}
 
-const stacks = [["B", "Q", "C", "Z", "V", "W", "G", "Q"],
-["R", "Q", "W", "L", "T", "V", "V"],
-["B", "M", "R", "V", "N", "F", "S", "P"],
-["C", "Z", "H", "B", "J", "Z", "Z", "P"],
-["D", "Z", "H", "C", "W", "W", "F"],
-["H", "N", "P", "R", "B", "Q"],
-["D", "G", "T", "N", "N"],
-["C", "G", "M", "M"],
-["B", "J", "N"]
-]
-
-// console.log({ stacks })
 processFile('./input.txt').then(contents => {
     const part1Instructions = contents
         .map(string => {
@@ -34,17 +24,28 @@ processFile('./input.txt').then(contents => {
         handleInstruction(instruction, stacks)
     }
     const finalStacks = []
-    for (const stack of stacks) {
-        finalStacks.push(stack.slice(-1)[0])
+    for (const [key, value] of Object.entries(stacks)) {
+        finalStacks.push(value.slice(-1)[0])
     }
+    console.log({ finalStacks })
     console.log('Part 1 final stacks', finalStacks.join(''))
 })
 
 function handleInstruction(instruction, stacks) {
     // Instruction = { number: a, from: b, to: c }
     const { number, from, to } = instruction
-    const toBeMoved = stacks[from - 1].splice(number)
-    stacks[to - 1] = [...stacks[to - 1], ...toBeMoved]
+    console.log('------------------------------------------')
+    console.log({ stacksBefore: stacks })
+    console.log({ number, from, to })
+
+    for (let i = 0; i < number; i++) {
+        const itemToMove = stacks[from].splice(-1)[0]
+        if (itemToMove) {
+            stacks[to] = [...stacks[to], itemToMove]
+        }
+    }
+    console.log({ stacksAfter: stacks })
+    
 
     return stacks
 }
