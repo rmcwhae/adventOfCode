@@ -3,8 +3,6 @@ const string = require('./input')
 
 const characterArray = Array.from(string)
 
-console.log({ characterArray })
-
 for (let i = 3; i < characterArray.length; i++) {
     const previousFourCharacters = characterArray.slice(i - 3, i + 1)
     if (isAllUnique(previousFourCharacters)) {
